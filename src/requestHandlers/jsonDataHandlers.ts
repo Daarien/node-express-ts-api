@@ -1,11 +1,7 @@
-import { RequestHandler } from "express";
 import path from "path";
 import { readFileSync, writeFileSync } from "fs";
-import { Request, ParamsDictionary } from "express-serve-static-core";
-
-interface RequestParams extends ParamsDictionary {
-  id: string;
-}
+import { RequestHandler } from "express-serve-static-core";
+import { UserRequestParams } from "../types";
 
 type User = {
   id: number;
@@ -16,19 +12,25 @@ type User = {
 type Users = User[];
 
 function getUsersData(): Users {
-  const data = readFileSync(path.resolve(__dirname, "users.json"), "utf8");
+  const data = readFileSync(path.resolve(__dirname, "../users.json"), "utf8");
   return JSON.parse(data);
 }
 
 function setUsersData(users: Users) {
-  writeFileSync(path.resolve(__dirname, "users.json"), JSON.stringify(users));
+  writeFileSync(
+    path.resolve(__dirname, "../users.json"),
+    JSON.stringify(users)
+  );
 }
 
 export const getUsersFromJsonHandler: RequestHandler = (req, res) => {
   const users = getUsersData();
   res.send(users);
 };
-export const getUserFromJsonHandler: RequestHandler = (req, res) => {
+export const getUserFromJsonHandler: RequestHandler<UserRequestParams> = (
+  req,
+  res
+) => {
   const { id } = req.params;
   const users = getUsersData();
   const user = users.find(u => u.id === Number(id));
@@ -73,7 +75,7 @@ export const changeUserInJsonHandler: RequestHandler = (req, res) => {
     if (age) {
       user.age = age;
     }
-    const modifedUser = { ...wantedUser, ...user };
+    const modifedUser: User = { ...wantedUser, ...user };
     const modifiedUsers = users.map(u => (u.id === id ? modifedUser : u));
     setUsersData(modifiedUsers);
     res.send(modifedUser);

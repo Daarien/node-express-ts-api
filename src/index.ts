@@ -10,7 +10,8 @@ import {
 import {
   getUserFromDbHandler,
   getUsersFromDbHandler,
-  setUserToDbHandler
+  setUserToDbHandler,
+  changeUserInDbHandler
 } from "./requestHandlers/mongoDbHandlers";
 
 // Connection URL
@@ -22,7 +23,10 @@ const dbName = "myproject";
 const app = express();
 app.use(bodyParser.json());
 
-const mongoClient = new MongoClient(url, { useNewUrlParser: true });
+const mongoClient = new MongoClient(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 mongoClient.connect((error, client) => {
   if (error) return console.error(error);
@@ -41,15 +45,17 @@ app.get("/db/users", getUsersFromDbHandler);
 
 app.get("/db/users/:id", getUserFromDbHandler);
 
-app.post("/db/user", setUserToDbHandler);
+app.post("/db/users", setUserToDbHandler);
+
+app.put("/db/users", changeUserInDbHandler);
 
 app.get("/users", getUsersFromJsonHandler);
 
 app.get("/users/:id", getUserFromJsonHandler);
 
-app.post("/user", setUserToJsonHandler);
+app.post("/users", setUserToJsonHandler);
 
-app.put("/user", changeUserInJsonHandler);
+app.put("/users", changeUserInJsonHandler);
 
 app.post("/auth", (req, res) => {
   res.send("Auth");
@@ -58,3 +64,9 @@ app.post("/auth", (req, res) => {
 app.all("/error", (req, res) => {
   res.status(500).end();
 });
+
+// прослушиваем прерывание работы программы (ctrl-c)
+// process.on("SIGINT", () => {
+//   dbClient.close();
+//   process.exit();
+// });
