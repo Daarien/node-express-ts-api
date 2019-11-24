@@ -13,12 +13,13 @@ import {
   setUserToDbHandler,
   changeUserInDbHandler
 } from "./requestHandlers/mongoDbHandlers";
+import { signUpHandler, authHandler } from "./requestHandlers/authHandlers";
 
 // Connection URL
 const url = "mongodb://localhost:27017";
 
 // Database Name
-const dbName = "myproject";
+const dbName = "auth-jwt";
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,9 +31,11 @@ const mongoClient = new MongoClient(url, {
 
 mongoClient.connect((error, client) => {
   if (error) return console.error(error);
-
-  app.locals.collection = client.db(dbName).collection("users");
-  app.listen(3000, function() {
+  app.locals.collections = {
+    users: client.db(dbName).collection("users"),
+    signed: client.db(dbName).collection("signed")
+  };
+  app.listen(3000, () => {
     console.log("Server listening on port 3000!");
   });
 });
@@ -57,9 +60,9 @@ app.post("/users", setUserToJsonHandler);
 
 app.put("/users", changeUserInJsonHandler);
 
-app.post("/auth", (req, res) => {
-  res.send("Auth");
-});
+app.post("/signup", signUpHandler);
+
+app.post("/auth", authHandler);
 
 app.all("/error", (req, res) => {
   res.status(500).end();

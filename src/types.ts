@@ -10,6 +10,15 @@ export type UserSchema = { _id: ObjectID } & User;
 
 export type UsersCollection = Collection<UserSchema>;
 
+type UserCredentials = {
+  login: string;
+  password: string;
+};
+
+type UserCredentialsSchema = { _id: ObjectID } & UserCredentials;
+
+export type UsersCredentialsCollection = Collection<UserCredentialsSchema>;
+
 export interface UserRequestParams extends ParamsDictionary {
   id: string;
 }

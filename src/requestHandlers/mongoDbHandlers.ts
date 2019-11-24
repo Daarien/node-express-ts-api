@@ -15,7 +15,7 @@ export const getUserFromDbHandler: RequestHandler<
   UserRequestParams,
   UserSchema | ErrorResponse
 > = (req, res) => {
-  const collection: UsersCollection = req.app.locals.collection;
+  const collection: UsersCollection = req.app.locals.collections.users;
   const userID = req.params.id;
   try {
     if (ObjectID.isValid(userID)) {
@@ -43,7 +43,7 @@ export const getUsersFromDbHandler: RequestHandler<
   ParamsDictionary,
   UserSchema[]
 > = (req, res) => {
-  const collection: UsersCollection = req.app.locals.collection;
+  const collection: UsersCollection = req.app.locals.collections.users;
   collection.find().toArray((error, users) => {
     if (error) return console.error(error);
     res.send(users);
@@ -59,7 +59,7 @@ export const setUserToDbHandler: RequestHandler<
 
   const { name, age } = req.body;
   const user = { name, age };
-  const collection: UsersCollection = req.app.locals.collection;
+  const collection: UsersCollection = req.app.locals.collections.users;
 
   collection.insertOne(user, (error, result) => {
     if (error) {
@@ -81,7 +81,7 @@ export const changeUserInDbHandler: RequestHandler<
     return res.status(400).send({ message: "Invalid request data" });
   }
 
-  const collection: UsersCollection = req.app.locals.collection;
+  const collection: UsersCollection = req.app.locals.collections.users;
 
   const { id, name, age } = req.body;
   if (!ObjectID.isValid(id)) {
