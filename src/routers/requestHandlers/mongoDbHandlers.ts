@@ -6,7 +6,7 @@ import {
   UserSchema,
   UserRequestParams,
   ErrorResponse
-} from "../types";
+} from "../../types";
 
 const INVALID_ID_MESSAGE =
   "Argument passed as ID must be a single String of 12 bytes or a string of 24 hex characters";
@@ -41,7 +41,8 @@ export const getUserFromDbHandler: RequestHandler<
 
 export const getUsersFromDbHandler: RequestHandler<
   ParamsDictionary,
-  UserSchema[]
+  UserSchema[],
+  { user: any }
 > = (req, res) => {
   const collection: UsersCollection = req.app.locals.collections.users;
   collection.find().toArray((error, users) => {

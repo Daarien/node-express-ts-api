@@ -1,7 +1,7 @@
 import path from "path";
 import { readFileSync, writeFileSync } from "fs";
 import { RequestHandler } from "express-serve-static-core";
-import { UserRequestParams } from "../types";
+import { UserRequestParams } from "../../types";
 
 type User = {
   id: number;
