@@ -12,13 +12,16 @@ type User = {
 type Users = User[];
 
 function getUsersData(): Users {
-  const data = readFileSync(path.resolve(__dirname, "../users.json"), "utf8");
+  const data = readFileSync(
+    path.resolve(__dirname, "../../users.json"),
+    "utf8"
+  );
   return JSON.parse(data);
 }
 
 function setUsersData(users: Users) {
   writeFileSync(
-    path.resolve(__dirname, "../users.json"),
+    path.resolve(__dirname, "../../users.json"),
     JSON.stringify(users)
   );
 }
